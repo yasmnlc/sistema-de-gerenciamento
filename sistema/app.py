@@ -98,13 +98,18 @@ def atualizar_dados(tabela_selecionada):
 def excluir_dados(tabela_selecionada):
     st.subheader(f"Excluir {tabela_selecionada}")
     id_excluir = st.number_input("ID a excluir", min_value=1, step=1)
+    dados = consultar_tabela(tabela_selecionada)
+    item_atual = next((item for item in dados if item['id'] == id_excluir), None)
 
-    if st.button("Excluir"):
-        sucesso, mensagem = excluir_tabela(tabela_selecionada, id_excluir)
-        if sucesso:
-            st.success(mensagem)
-        else:
-            st.error(mensagem)
+    if item_atual:
+        st.write(f"Dados do {tabela_selecionada} a excluir:", item_atual)  
+        if st.button("Confirmar Exclusão"):
+            if excluir_tabela(tabela_selecionada, id_excluir):  
+                st.success(f"{tabela_selecionada} excluído com sucesso!")
+            else:
+                st.error(f"Erro ao excluir {tabela_selecionada}.")
+    else:
+        st.warning("ID não encontrado.")
 
 
 def executar_acao(tabela_selecionada, acao_selecionada):
